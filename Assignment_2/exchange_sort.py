@@ -1,7 +1,7 @@
 # Exchange sort method works on both ascending and descending
 
+#There is the ascending way:
 def exchange_sort_asc(arr):
-    #There is the ascending way:
     l = len(arr)
     #Now compare the first element with all the elements that come after it
     for i in range (0, l - 1):
@@ -11,8 +11,8 @@ def exchange_sort_asc(arr):
                 arr[j] = arr[i]
                 arr[i] = c
 
+#There is the descending way:
 def exchange_sort_desc(arr):
-    #There is the descending way:
     l = len(arr)
     #Now compare the first element with all the elements that come after it
     for i in range (0, l - 1):
