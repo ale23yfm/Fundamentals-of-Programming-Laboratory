@@ -19,7 +19,7 @@ def menu(a, was_sorted):
             print("Thanks for playing!")
             exit()
         else:
-            print("You must choose one of the options 1-6.")
+            print("You must choose one of the options 1-5.")
 
 def option_1(a, was_sorted):
     n = int(input("Type the number of elements in the list:"))
