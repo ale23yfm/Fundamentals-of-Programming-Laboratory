@@ -1,12 +1,18 @@
 import random
 
+from configobj.validate import is_integer
+
 # --- MENU ---
 
 def menu(a, was_sorted):
     while True:
         print("\nChoose an option from the following list: ")
         print(" 1. Generate a random list of numbers. \n 2. Search for an item in the list. \n 3. Sort the list using ascending exchange sort. \n 4. Sort the list using stooge sort. \n 5. Exit. \n")
-        o=int(input("Type your option: "))
+        try:
+            o=int(input("Type your option: "))
+        except ValueError:
+            print("Invalid input. You must choose one of the options 1-5.")
+            continue
         if o == 1:
             a, was_sorted = option_1(a, was_sorted)
         elif o == 2:
@@ -22,10 +28,15 @@ def menu(a, was_sorted):
             print("You must choose one of the options 1-5.")
 
 def option_1(a, was_sorted):
-    n = int(input("Type the number of elements in the list:"))
-    while n < 1:
-        print("Please enter a number greater than 1.")
-        n = int(input("Type the number of elements in the list:"))
+    while True:
+        try:
+            n = int(input("Type the number of elements in the list: "))
+            if n < 1:
+                print("Please enter a number greater than 0.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input! Please enter a valid integer.")
     a = random.sample(range(1, 1000), n)
     print("The elements in the list are: ", a, "\n")
     was_sorted = False
@@ -40,7 +51,12 @@ def option_2(a, was_sorted):
         return a, was_sorted
     else:
         print("The elements in the list are: ", a, "\n")
-        n = int(input("Type the number you want to search in the list:"))
+        while True:
+            try:
+                n = int(input("Type the number you want to search in the list:"))
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid integer.")
         index = interpolation_search(a, 0, len(a) - 1, n)
         if index == -1:
             print(n, "was not found in the list.\n")
@@ -54,12 +70,18 @@ def option_3(a, was_sorted):
         return a, was_sorted
     elif was_sorted:
         print("Your list is sorted.")
+        return a, was_sorted
     else:
         was_sorted = True
-        step = int(input("Type the number of steps to be displayed:"))
-        while step < 1:
-            print("Step must be at least 1.")
-            step = int(input("Type the number of steps to be displayed:"))
+        while True:
+            try:
+                step = int(input("Type the number of steps to be displayed:"))
+                if step < 1:
+                    print("Step must be at least 1.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input! Please enter a valid integer.")
         exchange_sort_asc(a, step)
         print("The elements in the list are now: ", a, "\n")
         return a, was_sorted
@@ -70,13 +92,19 @@ def option_4(a, was_sorted):
         return a, was_sorted
     elif was_sorted:
         print("Your list is sorted.")
+        return a, was_sorted
     else:
         was_sorted = True
         count = [0]
-        step = int(input("Type the number of steps to be displayed:"))
-        while step < 1:
-            print("Step must be at least 1.")
-            step = int(input("Type the number of steps to be displayed:"))
+        while True:
+            try:
+                step = int(input("Type the number of steps to be displayed: "))
+                if step < 1:
+                    print("Step must be at least 1.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input! Please enter a valid integer.")
         stooge_sort(a, 0, len(a) - 1, step, count)
         print("The elements in the list are now: ", a, "\n")
         return a, was_sorted
