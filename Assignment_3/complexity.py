@@ -6,6 +6,8 @@ from algorithms import stooge_sort_alg
 
 from configobj.validate import is_integer
 
+#I wrote those wrappers to be easier to call them while running time analysis.
+
 def stooge_sort_wrapper(arr):
     stooge_sort_alg(arr, 0, len(arr) - 1)
 
