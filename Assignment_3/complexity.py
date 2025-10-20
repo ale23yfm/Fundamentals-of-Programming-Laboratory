@@ -141,18 +141,21 @@ def option_5():
         print("Invalid input. You must choose one of the options 1-3.")
         return
     if o == 1:
+        #List is already sorted.
         print("Exchange Sort on best-case:")
         for n in sizes:
             a = list(range(1, n))
             elapsed_time = timeit.timeit(lambda: exchange_sort_asc_alg(a.copy()), number=1)
             print(f"{n}-element list took {elapsed_time:.6f} seconds")
     elif o == 2:
+        #List is already sorted.
         print("Stooge Sort on best-case:")
         for n in sizes:
-            a = list(range(1, n))
+            a = list(range(1, n//10))
             elapsed_time = timeit.timeit(lambda: stooge_sort_wrapper(a.copy()), number=1)
-            print(f"{n}-element list took {elapsed_time:.6f} seconds")
+            print(f"{n//10}-element list took {elapsed_time:.6f} seconds")
     else:
+        #List is sorted as it should be, and we search for the first element in the list.
         print("Interpolation Search on best-case:")
         for n in sizes:
             a = list(range(1, n+1))
@@ -169,6 +172,7 @@ def option_6():
         print("Invalid input. You must choose one of the options 1-3.")
         return
     if o == 1:
+        #List contains shuffled elements.
         print("Exchange Sort on average-case:")
         for n in sizes:
             a = list(range(1, n))
@@ -176,13 +180,15 @@ def option_6():
             elapsed_time = timeit.timeit(lambda: exchange_sort_asc_alg(a.copy()), number=1)
             print(f"{n}-element list took {elapsed_time:.6f} seconds")
     elif o == 2:
+        #List contains shuffled elements.
         print("Stooge Sort on average-case:")
         for n in sizes:
-            a = list(range(1, n))
+            a = list(range(1, n//10))
             random.shuffle(a)
             elapsed_time = timeit.timeit(lambda: stooge_sort_wrapper(a.copy()), number=1)
-            print(f"{n}-element list took {elapsed_time:.6f} seconds")
+            print(f"{n//10}-element list took {elapsed_time:.6f} seconds")
     else:
+        #List is sorted, and we search for the element in the middle of the list.
         print("Interpolation Search on average-case:")
         for n in sizes:
             a = list(range(1, n+1))
@@ -199,18 +205,21 @@ def option_7():
         print("Invalid input. You must choose one of the options 1-3.")
         return
     if o == 1:
+        #List is already sorted, but in descending way, so none of the elements is at its index.
         print("Exchange Sort on worst-case:")
         for n in sizes:
             a = list(range(n, 1, -1))
             elapsed_time = timeit.timeit(lambda: exchange_sort_asc_alg(a.copy()), number=1)
             print(f"{n}-element list took {elapsed_time:.6f} seconds")
     elif o == 2:
+        #List is already sorted, but in descending way, so none of the elements is at its index.
         print("Stooge Sort on worst-case:")
         for n in sizes:
-            a = list(range(n, 1, -1))
+            a = list(range(n//10, 1, -1))
             elapsed_time = timeit.timeit(lambda: stooge_sort_wrapper(a.copy()), number=1)
-            print(f"{n}-element list took {elapsed_time:.6f} seconds")
+            print(f"{n//10}-element list took {elapsed_time:.6f} seconds")
     else:
+        #List is sorted as it should be, but we search for the last element in the list.
         print("Interpolation Search on worst-case:")
         for n in sizes:
             a = list(range(1, n+1))
@@ -259,9 +268,17 @@ def stooge_sort(arr, f, l, step, count):
         if count[0] % step == 0:
             print("Partial sorted list now:", arr, "\n")
 
-# --- Searching Algorithms ---
+# --- Searching Algorithm ---
 
 def interpolation_search(arr, f, l, n):
+    # After each recursive call, it remains square root of n -> n^(1/2)
+    # And going on, it looks like n-> n^(1/2) -> n^(1/4) -> n^(1/8) -> n^(1/16) -> ...
+    # The formula is like n^((1/2)^k)
+    # It stops when it is 1 so:
+    # n^((1/2)^k) = 1 => O(log(log(n)))
+
+    # Best case is when the searched element has index 0 so it is O(1)
+    # Worst case is when the elements are badly distributed, so it is linear: O(n)
     if f <= l and arr[f] <= n <= arr[l]:
         if arr[f] == arr[l]:
             if arr[f] == n:
