@@ -8,7 +8,7 @@ def exchange_sort_asc_alg(arr):
     # Now we sum them: (n-1)+(n-2)+(n-3)+...+2+1 = (Gauss Summation) = (n-1)(n-2)/2 = (n^2-3n+2)/2
     # We consider the grates power so complexity is O(n^2)
 
-    # Best case is when the list is sorted so it is linear: O(n)
+    # Best case is when the list is sorted so it is linear: O(n^2)
     # Worst case is when the list is sorted descendent so we have to swap every two elements in pairs, so it is O(n^2)
 
     l = len(arr)
