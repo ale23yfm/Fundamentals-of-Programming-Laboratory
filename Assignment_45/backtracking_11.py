@@ -58,7 +58,7 @@ def backtracking_rec(n, m, seq=None, used=None, found=False):
 def backtracking_iter(n, m):
     # for i= 1->n we have:
     # 1->n, 2-> n-1, ..., n->1 choices which means O(n*(n-1)*...*2*1) = O(n!)
-    # abs(seq[i] - seq[i-1]) < m) this can improve the complexity, but in worst case it is O(n!)
+    # abs(seq[i] - seq[i-1]) < m) can improve the complexity, but in worst case it is O(n!)
     seq = [0] * (n + 1)
     used = [0] * (n + 1)
     i = 1

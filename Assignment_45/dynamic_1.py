@@ -1,3 +1,9 @@
+#1. Determine the longest common subsequence of two given sequences.
+# Subsequence elements are not required to occupy consecutive positions.
+# For example, if `X = "MNPNQMN"` and `Y = "NQPMNM"`,
+# the longest common subsequence has length `4`, and can be one of `"NQMN"`, `"NPMN"` or `"NPNM"`.
+# Determine and display both the length of the longest common subsequence as well as at least one such subsequence.
+
 def menu():
     while True:
         print("\nChoose an option from the following list: ")
