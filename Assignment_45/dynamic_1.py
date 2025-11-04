@@ -44,6 +44,9 @@ def lcs_dynamic(x, y):
                 res[i][j] = max(res[i][j-1], res[i-1][j])
 
     length = res[m-1][n-1]
+
+    for row in res: print(row)
+
     i, j = m-1, n-1
     subseq = []
     while i > 0 and j > 0:
