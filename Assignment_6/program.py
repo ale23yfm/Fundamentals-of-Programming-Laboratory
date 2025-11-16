@@ -5,7 +5,8 @@
 #A3. Determine the length and the elements of a longest subarray of numbers having increasing modulus.
 #B1. Determine the length and the elements of a longest increasing subsequence, when considering each number's modulus.
 
-import random
+def modulus(z):
+    return (get_real(z) ** 2 + get_img(z) ** 2) ** 0.5
 
 # 
 # Write below this comment 
@@ -15,14 +16,34 @@ import random
 # -> Functions communicate using input parameters and their return values
 #
 
-#Generates the random list with 10 complex numbers
-def random_list(n):
-    complex_list = []
-    for i in range(n):
-        a = random.randint(-10, 10)
-        b = random.randint(-10, 10)
-        complex_list.append(complex(a, b))
-    return complex_list
+#"""
+def get_real(re):
+    return re[0]
+
+def get_img(im):
+    return im[1]
+
+def set_real(re, x):
+    re[0] = x
+
+def set_img(im, x):
+    im[1] = x
+
+def create_number(re, im):
+    return [re, im]
+
+def nr_to_str(z):
+    re, im = z[0], z[1]
+    if im == 0:
+        return f"{re}"
+    elif re == 0:
+        return f"{im}i"
+    elif im > 0:
+        return f"{re}+{im}i"
+    else:  # im < 0
+        return f"{re}-{abs(im)}i"
+
+#"""
 
 #
 # Write below this comment 
@@ -32,14 +53,34 @@ def random_list(n):
 # -> Functions communicate using input parameters and their return values
 #
 
-#Generates the random dict with 10 complex numbers
-def random_dict(n):
-    complex_dict = {}
-    for i in range(n):
-        a = random.randint(-10, 10)
-        b = random.randint(-10, 10)
-        complex_dict[i] = {"real": a, "img": b}
-    return complex_dict
+"""
+def get_real(z):
+    return z["real"]
+
+def get_img(z):
+    return z["img"]
+
+def set_real(z, x):
+    z["real"] = x
+
+def set_img(z, x):
+    z["img"] = x
+
+def create_number(re, im):
+    return {"real": re, "img": im}
+    
+def nr_to_str(z):
+    re, im = z["real"], z["img"]
+    if im == 0:
+        return f"{re}"
+    elif re == 0:
+        return f"{im}i"
+    elif im > 0:
+        return f"{re}+{im}i"
+    else:  # im < 0
+        return f"{re}-{abs(im)}i"
+
+"""
 
 #
 # Write below this comment 
@@ -49,13 +90,13 @@ def random_dict(n):
 # -> Functions communicate using input parameters and their return values
 #
 
-#A3 with list
-def longest_increasing_subarray_list(numbers):
+#A3
+def longest_increasing_subarray(numbers):
     max_len = 1
     max_start = 0
     start = 0
     for i in range(1, len(numbers)):
-        if abs(numbers[i]) > abs(numbers[i-1]):
+        if modulus(numbers[i]) > modulus(numbers[i-1]):
             if i - start + 1 > max_len:
                 max_len = i - start + 1
                 max_start = start
@@ -64,79 +105,29 @@ def longest_increasing_subarray_list(numbers):
 
     return max_len, numbers[max_start:max_start + max_len]
 
-#A3 with dict
-def longest_increasing_subarray_dict(numbers):
-    max_len = 1
-    max_start = 0
-    start = 0
-
-    keys = list(numbers.keys())
-    values = [numbers[k] for k in keys]
-
-    for i in range(1, len(values)):
-        mod_i = (values[i]["real"] ** 2 + values[i]["img"] ** 2) ** 0.5
-        mod_prev = (values[i - 1]["real"] ** 2 + values[i - 1]["img"] ** 2) ** 0.5
-        if mod_i > mod_prev:
-            if i - start + 1 > max_len:
-                max_len = i - start + 1
-                max_start = start
-        else:
-            start = i
-
-    longest_subdict = {}
-    for i in range(max_len):
-        longest_subdict[max_start + i] = numbers[max_start + i]
-
-    return max_len, longest_subdict
-
-#B1 with list
-def longest_increasing_subsequence_list(numbers):
+#B1
+def longest_increasing_subsequence(numbers):
     n = len(numbers)
-    mod = [abs(z) for z in numbers]
-    subs = [[z] for z in numbers]
+    dp = [1]*n
+    prev = [-1] * n
 
     for i in range(1, n):
         for j in range(i):
-            if mod[i] > mod[j] and len(subs[j]) + 1 > len(subs[i]):
-                subs[i] = subs[j] + [numbers[i]]
+            if modulus(numbers[j]) < modulus(numbers[i]) and dp[i] < dp[j] + 1:
+                dp[i] = dp[j] + 1
+                prev[i] = j
 
-    longest_seq = max(subs, key=len)
-    return len(longest_seq), longest_seq
+    max_len = max(dp)
+    index = dp.index(max_len)
 
-#B1 with dict
-def longest_increasing_subsequence_dict(numbers):
-    if not numbers:
-        return 0, {}
+    lis=[]
+    while index != -1:
+        lis.append(numbers[index])
+        index = prev[index]
 
-    keys = list(numbers.keys())
-    values = [numbers[k] for k in keys]
-    n = len(values)
+    lis.reverse()
 
-    # Compute modulus
-    mod = [(v["real"]**2 + v["img"]**2)**0.5 for v in values]
-
-    # Initialize subsequences
-    subs = [[v] for v in values]
-
-    for i in range(1, n):
-        for j in range(i):
-            if mod[i] > mod[j] and len(subs[j]) + 1 > len(subs[i]):
-                subs[i] = subs[j] + [values[i]]
-
-    # Find the longest
-    longest_seq = max(subs, key=len)
-
-    # Convert back to dict with original keys
-    # We take keys from values in order of longest_seq
-    longest_dict = {}
-    for idx, v in enumerate(longest_seq):
-        # Find the original key corresponding to this value
-        for k in keys:
-            if numbers[k] == v and k not in longest_dict:
-                longest_dict[k] = v
-                break
-
-    return len(longest_seq), longest_dict
+    return max_len, lis
 
 #
 # Write below this comment 
@@ -145,83 +136,84 @@ def longest_increasing_subsequence_dict(numbers):
 # Ideally, this section should not contain any calculations relevant to program functionalities
 #
 
-#Get the number for real/img part of complex numbers
-def config_number(n):
+def read_number(numbers):
     while True:
         try:
-            n = int(input("Type the real part of the complex number: "))
+            n = int(input("How many complex numbers do you want? Your answer is: "))
+            if n <= 0:
+                print("Please enter a positive integer.")
+                continue
             break
         except ValueError:
-            print("Please enter a valid integer for the real part.")
-    return n
+            print("Invalid choice. Please type a positive integer.")
 
-#Places the real/img part in the list
-def list_complex_numbers():
-    n = int(input("How many complex numbers do you want? Your answer is: "))
-    numbers = []
+    print("Enter your numbers as a+bi: ")
     for i in range(n):
-        a = config_number("Type the real part of the complex number: ")
-        b = config_number("Type the imaginary part of the complex number: ")
-        z = complex(a, b)
-        numbers.append(z)
+        while True:
+            z = input(f"{i+1}: ").replace(" ", "")
+
+            if not all(ch.isdigit() or ch in "+-i" for ch in z):
+                print("Invalid characters detected! Only digits, +, -, and i are allowed. Try again.")
+                continue
+
+            try:
+                if z == "+i":
+                    re = 0
+                    im = 1
+                elif z == "-i":
+                    re = 0
+                    im = -1
+
+                # a+bi || a+i
+                if "+" in z:
+                    re, img = z.split("+")
+                    re = int(re)
+
+                    if img == "i" or img == "+i":
+                        im = 1
+                    elif img == "-i":
+                        im = -1
+                    else:
+                        im = int(img.replace("i", ""))
+
+                # a-bi || a-i
+                elif "-" in z[1:]:
+                    idx = z[1:].index("-") + 1
+                    re = int(z[:idx])
+                    im_part = z[idx:].replace("i", "")
+                    if im_part == "" or im_part == "+":
+                        im = 1
+                    elif im_part == "-":
+                        im = -1
+                    else:
+                        im = int(im_part)
+
+                # bi
+                elif "i" in z:
+                    im = z.replace("i", "")
+                    if im == "" or im == "+":
+                        im = 1
+                    elif im == "-":
+                        im = -1
+                    else:
+                        im = int(im)
+                    re = 0
+
+                # a
+                else:
+                    re = int(z)
+                    im = 0
+
+                numbers.append(create_number(re, im))
+                break
+            except ValueError:
+                print("Invalid number format! Please enter again.")
+
     return numbers
 
-#Places the real/img part in the dict
-def dict_complex_numbers():
-    n = int(input("How many complex numbers do you want? Your answer is: "))
-    numbers = {}
-    for i in range(n):
-        a = config_number("Type the real part of the complex number: ")
-        b = config_number("Type the imaginary part of the complex number: ")
-        numbers[i] = {"real": a, "img": b}
-    return numbers
-
-#Shows the list
-def display_list(numbers):
-    if not numbers:
-        print("No list of complex numbers yet. Please create one first. Choose option 1.")
-    else:
-        print("\nThis is your list of complex numbers:")
-        print(numbers)
-    return numbers
-
-#Shows the dict
-def display_dict(numbers):
-    if not numbers:
-        print("No dict of complex numbers yet. Please create one first. Choose option 1.")
-    else:
-        print("\nThis is your dict of complex numbers:")
-        print(numbers)
-    return numbers
-
-#The following two help the menu to adapt to the list/dict mode
-def text_list():
-    print("list", end=" ")
-
-def text_dict():
-    print("dict", end=" ")
-
-
-def print_a3_list(numbers):
-    length, subarray = longest_increasing_subarray_list(numbers)
-    print("Max length:", length)
-    print("Subarray:", subarray)
-
-def print_a3_dict(numbers):
-    length, subarray = longest_increasing_subarray_dict(numbers)
-    print("Max length:", length)
-    print("Subarray:", subarray)
-
-
-def print_b1_list(numbers):
-    length, sequence = longest_increasing_subsequence_list(numbers)
-    print("Max length:", length)
-    print("Subsequence:", sequence)
-
-def print_b1_dict(numbers):
-    length, sequence = longest_increasing_subsequence_list(numbers)
-    print("Max length:", length)
-    print("Subsequence:", sequence)
+def print_number(numbers):
+    print(numbers, "\n")
+    print("   |   ".join(nr_to_str(z) for z in numbers))
 
 def menu(o, numbers):
     while True:
@@ -233,10 +225,7 @@ def menu(o, numbers):
             print("Invalid choice. Please select 1-4.")
             continue
         if o == 1:
-            print("Do you and the default", end=" ")
-            # text_list()
-            text_dict()
-            print("with 10 complex numbers?")
+            print("Do you and the default 10 complex numbers?")
             print(" 1. Yes. \n 2. No. \n 3. Go back. \n")
             try:
                 w = int(input("Type your option: "))
@@ -244,45 +233,41 @@ def menu(o, numbers):
                 print("Invalid input. You must choose one of the options 1-3.")
                 continue
             if w == 1:
-                print("This is your default", end=" ")
-                # text_list()
-                text_dict()
-                print("of complex numbers:")
-                # numbers = random_list(10)
-                numbers = random_dict(10)
-                print (numbers)
+                numbers.clear()
+                print("There are the default numbers:")
+                numbers = [create_number(3, 7), create_number(3, 4), create_number(1, -1), create_number(2,2), create_number(4, 0), create_number(-4, 2), create_number(0, 5), create_number(1, 2), create_number(3, 8)]
+                print("Those are the numbers:")
+                print_number(numbers)
             elif w == 2:
-                # numbers = list_complex_numbers()
-                numbers = dict_complex_numbers()
+                numbers.clear()
+                read_number(numbers)
+                print_number(numbers)
             elif w == 3:
                 continue
             else:
                 print("Invalid choice. Please select 1-3.")
         elif o == 2:
-            # display_list(numbers)
-            display_dict(numbers)
+            print_number(numbers)
         elif o == 3:
-            if not numbers:
-                print("No", end=" ")
-                # text_list()
-                text_dict()
-                print("of complex numbers yet. Please create one first. Choose option 1.")
+            print("Which problem do you want to see?")
+            print(" 1. A. \n 2. B. \n 3. Go back. \n")
+            w = int(input("Type your option: "))
+            if w == 1:
+                print("This is the subarray of numbers:")
+                length, subarray = longest_increasing_subarray(numbers)
+                print("Max length:", length)
+                print("Subarray:", subarray)
+                print_number(subarray)
+            elif w == 2:
+                print("This is the longest subsequence:")
+                length, sequence = longest_increasing_subsequence(numbers)
+                print("Max length:", length)
+                print("Subsequence:", sequence)
+                print_number(sequence)
+            elif w == 3:
+                continue
             else:
-                print("Which problem do you want to see?")
-                print(" 1. A. \n 2. B. \n 3. Go back. \n")
-                w = int(input("Type your option: "))
-                if w == 1:
-                    print("This is the subarray of numbers:")
-                    # print_a3_list(numbers)
-                    print_a3_dict(numbers)
-                elif w == 2:
-                    print("This is the longest subsequence:")
-                    # print_b1_list(numbers)
-                    print_b1_dict(numbers)
-                elif w == 3:
-                    continue
-                else:
-                    print("Invalid choice. Please select 1-3.")
+                print("Invalid choice. Please select 1-3.")
         elif o == 4:
             print("Thanks for playing!")
             exit()
@@ -290,7 +275,8 @@ def menu(o, numbers):
             print("Invalid choice. Please select 1-4.")
 
 def main():
-    numbers = []
+    numbers = [create_number(3, 7), create_number(3, 4), create_number(1, -1), create_number(2, 2), create_number(4, 0),
+               create_number(-4, 2), create_number(0, 5), create_number(1, 2), create_number(3, 8)]
     o = 0
     menu(o, numbers)
 
