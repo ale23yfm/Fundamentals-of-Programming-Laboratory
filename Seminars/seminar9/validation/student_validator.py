@@ -1,4 +1,4 @@
-from errors.exceptions import ValidationError
+from Seminars.seminar9.errors.exceptions import ValidationError
 
 
 class StudentValidator:

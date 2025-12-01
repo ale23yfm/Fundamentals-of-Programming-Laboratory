@@ -1,4 +1,4 @@
-from errors.exceptions import RepositoryError
+from Seminars.seminar9.errors.exceptions import RepositoryError
 
 
 class RepositoryStudents:

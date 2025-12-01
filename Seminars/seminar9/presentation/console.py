@@ -1,5 +1,5 @@
-from domain.student import Student
-from errors.exceptions import UIError, ValidationError, RepositoryError
+from Seminars.seminar9.domain.student import Student
+from Seminars.seminar9.errors.exceptions import UIError, ValidationError, RepositoryError
 
 
 class Console:

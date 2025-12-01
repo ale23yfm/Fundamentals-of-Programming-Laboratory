@@ -1,4 +1,4 @@
-from domain.student import Student
+from Seminars.seminar9.domain.student import Student
 
 
 class ServiceStudents:
