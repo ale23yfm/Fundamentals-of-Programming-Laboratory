@@ -1,0 +1,2 @@
+class BinaryFileRepository:
+    pass
