@@ -1,8 +1,8 @@
 from functions import add_festival, display_season, display_by_artist
 
 def menu(festivals):
+    print ("Welcome to the menu!")
     while True:
-        print ("Welcome to the menu!")
         print ("Choose one option:")
         print ("1. Add festival")
         print ("2. Display artists during a season")
@@ -121,9 +121,6 @@ def console(festivals):
                     for f in result:
                         print(f)
 
-
-
-
 if __name__ == "__main__":
     festivals = [{"name": "Untold","month":12, "ticket cost":"500", "a list of artists":["John", "Tom"]},
                  {"name": "BeachPlease","month":5, "ticket cost":"200", "a list of artists":["Cloe"]},
@@ -131,5 +128,5 @@ if __name__ == "__main__":
                  {"name": "Music","month":2, "ticket cost":"850", "a list of artists":["John", "BigMan", "Tom"]},
                  {"name": "Song","month":7, "ticket cost":"50", "a list of artists":["Tonny"]},
                  {"name": "The Day","month":1, "ticket cost":"450", "a list of artists":["Anna", "Zoe"]},]
-    #menu(festivals)
-    console(festivals)
+    menu(festivals)
+    #console(festivals)
