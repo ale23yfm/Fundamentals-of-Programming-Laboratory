@@ -84,7 +84,6 @@ class BinaryFileRepository(MemoryRepository):
     def _save(self):
         """
         Save the data to the file.
-        :return: the data
         """
         with open(self.__filename, "wb") as f:
             pickle.dump(self._data, f)

@@ -1,12 +1,14 @@
-from Assignment_8.src.services.services import StudentService
-from Assignment_8.src.ui.menu import Menu
-from Assignment_8.src.domain.student_validation import StudentValidation
-from Assignment_8.src.domain.student import Student
-from Assignment_8.src.repository.repo import MemoryRepository, JsonFileRepository, TextFileRepository, BinaryFileRepository
+import os
+from .services.services import StudentService
+from .ui.menu import Menu
+from .domain.student_validation import StudentValidation
+from .domain.student import Student
+from .repository.repo import MemoryRepository, JsonFileRepository, TextFileRepository, BinaryFileRepository
 
 def read_settings(file_path="settings.properties"):
+    full_path = os.path.join(os.path.dirname(__file__), file_path)
     settings = {}
-    with open(file_path, "r") as f:
+    with open(full_path, "r") as f:
         for line in f:
             line = line.strip()
             if line == "" or line.startswith("#"):
@@ -44,10 +46,13 @@ if __name__ == "__main__":
     if repo_type == "memory":
         repo = MemoryRepository()
     elif repo_type == "text":
+        filename = settings.get("filename_text", "students.txt")
         repo = TextFileRepository(filename)
     elif repo_type == "binary":
+        filename = settings.get("filename_binary", "students.bin")
         repo = BinaryFileRepository(filename)
     elif repo_type == "json":
+        filename = settings.get("filename_json", "students.json")
         repo = JsonFileRepository(filename)
     else:
         raise Exception(f"Unknown repository type: {repo_type}")
