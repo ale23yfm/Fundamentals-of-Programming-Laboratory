@@ -1,14 +1,21 @@
-from Assignment_8.src.services.services import StudentService
-from Assignment_8.src.ui.menu import Menu
-from Assignment_8.src.domain.student_validation import StudentValidation
-from Assignment_8.src.domain.student import Student
-from Assignment_8.src.repository.binary_file_repo import BinaryFileRepository
-from Assignment_8.src.repository.text_file_repo import TextFileRepository
-from Assignment_8.src.repository.memory_file_repo import MemoryRepository
-from Assignment_8.src.repository.repo import MemoryRepository
-from Assignment_8.src.repository.repo import TextFileRepository
-from Assignment_8.src.repository.repo import BinaryFileRepository
+import os
+from .services.services import StudentService
+from .ui.menu import Menu
+from .domain.student_validation import StudentValidation
+from .domain.student import Student
+from .repository.repo import MemoryRepository, JsonFileRepository, TextFileRepository, BinaryFileRepository
 
+def read_settings(file_path="settings.properties"):
+    full_path = os.path.join(os.path.dirname(__file__), file_path)
+    settings = {}
+    with open(full_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if line == "" or line.startswith("#"):
+                continue
+            key, value = line.split("=")
+            settings[key.strip()] = value.strip()
+    return settings
 
 def generate_initial_students(service):
     students = [
@@ -30,12 +37,25 @@ def generate_initial_students(service):
             pass
 
 if __name__ == "__main__":
+    settings = read_settings("settings.properties")
+    repo_type = settings.get("repository", "memory")
+    filename = settings.get("filename", "students.txt")
+
     validator = StudentValidation()
 
-    # SWITCH REPOSITORY HERE:
-    #repo = MemoryRepository()
-    repo = TextFileRepository("students.txt")
-    #repo = BinaryFileRepository("students.bin")
+    if repo_type == "memory":
+        repo = MemoryRepository()
+    elif repo_type == "text":
+        filename = settings.get("filename_text", "students.txt")
+        repo = TextFileRepository(filename)
+    elif repo_type == "binary":
+        filename = settings.get("filename_binary", "students.bin")
+        repo = BinaryFileRepository(filename)
+    elif repo_type == "json":
+        filename = settings.get("filename_json", "students.json")
+        repo = JsonFileRepository(filename)
+    else:
+        raise Exception(f"Unknown repository type: {repo_type}")
 
     service = StudentService(validator, repo)
 

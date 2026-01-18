@@ -1,4 +1,4 @@
-from Assignment_8.src.domain.student import Student
+from ..domain.student import Student
 
 class StudentService:
     def __init__(self, student_validator, student_repository):

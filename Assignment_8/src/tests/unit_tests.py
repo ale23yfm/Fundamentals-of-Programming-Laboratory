@@ -1,9 +1,9 @@
 import unittest
 import os
-from Assignment_8.src.domain.student import Student
-from Assignment_8.src.services.services import StudentService
-from Assignment_8.src.repository.repo import MemoryRepository, TextFileRepository, BinaryFileRepository
-from Assignment_8.src.domain.student_validation import StudentValidation
+from ..domain.student import Student
+from ..services.services import StudentService
+from ..repository.repo import MemoryRepository, TextFileRepository, BinaryFileRepository
+from ..domain.student_validation import StudentValidation
 
 class TestStudentService(unittest.TestCase):
     def setUp(self):
