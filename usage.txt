@@ -1,0 +1,8 @@
+start venv:
+source venv/bin/activate
+
+include src:
+export PYTHONPATH=$(pwd)/src
+
+run the program:
+python3 -m src.main
