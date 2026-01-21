@@ -1,0 +1,2 @@
+class TextFileError(Exception):
+    pass
