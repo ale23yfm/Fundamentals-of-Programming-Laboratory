@@ -5,6 +5,7 @@ from practice.train.domain.train import Route
 class TextFileRepo:
     def __init__(self, filepath):
         self._filepath = filepath
+        self._hourly_rate = None
         self._train= {}
         self.load_from_file()
 
@@ -20,7 +21,10 @@ class TextFileRepo:
             if line == "":
                 continue
             parts = line.split(",")
-            id = parts[0]
+            if len(parts) == 1:
+                self._hourly_rate = parts[0]
+                continue
+            id = int(parts[0])
             d_city = parts[1]
             d_time = parts[2]
             a_city = parts[3]
@@ -32,5 +36,29 @@ class TextFileRepo:
 
     def save_to_file(self):
         with open(self._filepath, "w") as f:
+            f.write(self._hourly_rate+"\n")
             for train in self._train.values():
-                f.write(f"{train.id}, {train.d_city}, {train.d_time_str}, {train.a_city}, {train.a_time_str}, {train.tickets}")
+                f.write(f"{train._id}, {train._d_city}, {train._d_time_str}, {train._a_city}, {train._a_time_str}, {train._tickets}\n")
+
+    def get_all(self):
+        return list(self._train.values())
+
+    def get_route(self, route_id):
+        route_id = int(route_id)
+        if route_id not in self._train:
+            raise TextFileError ("Route does not exist.")
+        return self._train[route_id]
+
+    def add_route(self, route: Route):
+        if route.id in self._train:
+            raise TextFileError ("Route id already exists.")
+        self._train[route.id] = route
+        self.save_to_file()
+
+    @property
+    def train(self):
+        return self._train
+
+    @property
+    def get_hourly_rate(self):
+        return self._hourly_rate
